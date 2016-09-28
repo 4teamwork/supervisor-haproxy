@@ -24,8 +24,8 @@ setup(name='supervisor-haproxy',
       zip_safe=False,
 
       install_requires=[
-          'superlance',
           'supervisor',
+
       ],
       tests_require=tests_require,
       test_suite='supervisor_haproxy.tests',
