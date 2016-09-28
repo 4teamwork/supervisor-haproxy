@@ -22,3 +22,4 @@ nosetests.xml
 /include/
 /lib/
 /pip-selfcheck.json
+/README.html
