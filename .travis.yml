@@ -1,15 +1,8 @@
-language: python
-
 sudo: false
-
-matrix:
-    include:
-        - python: 2.7
-          env: TOXENV=py27
-
-install:
-    # "virtualenv<14.0.0" is needed for Python 3.2 compat
-    - travis_retry pip install "virtualenv<14.0.0" tox
-
-script:
-    - travis_retry tox
+language: python
+python:
+  - "2.7"
+services:
+  - docker
+install: pip install tox-travis
+script: tox
