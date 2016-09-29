@@ -54,28 +54,23 @@ Example using buildout for configuring supervisor:
 Development / Tests
 -------------------
 
-The tests can be ran using `tox <https://tox.readthedocs.io/en/latest/>`_.
-After installing ``tox`` and cloning the repository with git you can just run the
-``tox`` command in the checkout for running the standard tests.
+For development and running tests you need to install:
 
-The standard tests do not test the communication with haproxy.
-For that you need to setup a haproxy with `docker <https://www.docker.com/>`_:
+- `tox <https://tox.readthedocs.io/en/latest/>`_ in order to run the tests.
+- `docker <https://www.docker.com/>`_ so that the tests can set up a haproxy
+  for testing against.
 
-Running haproxy with docker:
+After installing `tox` and `docker` you can clone the repository and run the
+tests with the `tox` command:
 
 .. code:: bash
 
+    $ git clone git@github.com:4teamwork/supervisor-haproxy.git
     $ cd supervisor-haproxy
-    $ ./run-docker
+    $ tox
 
-In another terminal you can then run the tests against haproxy:
-
-.. code:: bash
-
-    $ virutalenv .
-    $ ./bin/pip install -e .
-    $ ./bin/python test_haproxy_control.py
-
+While running the tests, the haproxy in docker will be bound to the port ``9902``,
+so you need to make sure that this port is available.
 
 
 Links
