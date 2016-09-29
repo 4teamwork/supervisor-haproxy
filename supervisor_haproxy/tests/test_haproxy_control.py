@@ -3,6 +3,7 @@ from supervisor_haproxy.haproxy_control import STATUS_DRAIN
 from supervisor_haproxy.haproxy_control import STATUS_MAINT
 from supervisor_haproxy.haproxy_control import STATUS_READY
 from supervisor_haproxy.haproxy_control import STATUS_UP
+import os
 import unittest
 
 
@@ -13,7 +14,8 @@ class TestHaProxyControl(unittest.TestCase):
     """
 
     def setUp(self):
-        self.control = HaProxyControl('tcp://127.0.0.1:9902')
+        self.control = HaProxyControl('tcp://127.0.0.1:{}'.format(
+            os.environ.get('HAPROXY_STATS_SOCKET')))
         self.cleanup()
 
     def tearDown(self):
