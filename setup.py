@@ -4,7 +4,8 @@ import os
 version = '1.0.0.dev0'
 
 tests_require = [
-    'supervisor',
+    'freezegun',
+    'unittest2',
 ]
 
 setup(name='supervisor-haproxy',
@@ -23,8 +24,8 @@ setup(name='supervisor-haproxy',
       zip_safe=False,
 
       install_requires=[
-          'superlance',
           'supervisor',
+
       ],
       tests_require=tests_require,
       test_suite='supervisor_haproxy.tests',

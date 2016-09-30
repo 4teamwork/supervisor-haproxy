@@ -17,3 +17,9 @@ tmp/
 coverage.xml
 nosetests.xml
 
+/.Python
+/bin/
+/include/
+/lib/
+/pip-selfcheck.json
+/README.html
