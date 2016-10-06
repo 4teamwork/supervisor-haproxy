@@ -28,14 +28,14 @@ First configure a stats socket in the **haproxy config**:
 .. code::
 
    global
-       stats socket ipv4@127.0.0.1:8800 level admin
+       stats socket ipv4@127.0.0.1:8801 level admin
 
 then configure the supervisor haproxy event listener in the **supervisor config**:
 
 .. code:: ini
 
     [eventlistener:HaProxy]
-    command = .../bin/supervisor-haproxy tcp://localhost:8800 instance1:plone01/plone0101 instance2:plone01/plone0102
+    command = .../bin/supervisor-haproxy tcp://localhost:8801 instance1:plone01/plone0101 instance2:plone01/plone0102
     events = PROCESS_STATE
     process_name=HaProxy
 
@@ -47,7 +47,7 @@ Example using buildout for configuring supervisor:
     plugins +=
         supervisor-haproxy
     eventlisteners +=
-        HaProxy PROCESS_STATE ${buildout:bin-directory}/supervisor-haproxy [tcp://localhost:8800 instance1:plone01/plone0101 instance2:plone01/plone0102]
+        HaProxy PROCESS_STATE ${buildout:bin-directory}/supervisor-haproxy [tcp://localhost:8801 instance1:plone01/plone0101 instance2:plone01/plone0102]
 
 
 
