@@ -1,6 +1,8 @@
+from supervisor_haproxy.exceptions import HaProxyConnectionRefused
 from supervisor_haproxy.haproxy_control import STATUS_DRAIN
 from supervisor_haproxy.haproxy_control import STATUS_MAINT
 from supervisor_haproxy.haproxy_control import STATUS_READY
+import errno
 import socket
 
 
@@ -20,7 +22,8 @@ class HaProxyControlMock(object):
 
     def set_server_status(self, backend, server_name, state):
         if self.refuse_connection:
-            raise socket.error(61, 'Connection refused')
+            raise HaProxyConnectionRefused(
+                socket.error(errno.ECONNREFUSED, 'Connection refused'))
 
         valid_states = (STATUS_READY, STATUS_DRAIN, STATUS_MAINT)
         if state not in valid_states:

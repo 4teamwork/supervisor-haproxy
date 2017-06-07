@@ -1,10 +1,16 @@
 from datetime import datetime
+from datetime import timedelta
 from supervisor import childutils
+from supervisor_haproxy.exceptions import HaProxyConnectionRefused
 from supervisor_haproxy.haproxy_control import HaProxyControl
 from supervisor_haproxy.haproxy_control import STATUS_DRAIN
 from supervisor_haproxy.haproxy_control import STATUS_MAINT
 from supervisor_haproxy.haproxy_control import STATUS_READY
 import sys
+
+
+MAX_CONSECUTIVE_CONNECTION_REFUSED = 4
+SKIP_TIMEOUT_AFTER_CONNECTION_REFUSED = timedelta(seconds=60)
 
 
 class HaProxyEventListener(object):
@@ -28,6 +34,8 @@ class HaProxyEventListener(object):
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.running = False
+        self.consecutive_refused_connections = 0
+        self.skip_until = None
 
     def runforever(self, test=False):
         while True:
@@ -58,15 +66,43 @@ class HaProxyEventListener(object):
                      action=action,
                      **program_info))
 
+        if self.skip_until is not None:
+            if self.skip_until < datetime.now():
+                self.consecutive_refused_connections = 0
+                self.skip_until = None
+                self.log('WARNING: resuming event handling.')
+
+            else:
+                self.log('WARNING: skipping event handling because too many'
+                         ' connections were refused previously.')
+                return self.ok()
+
         try:
             self.haproxy_control.set_server_status(
                 program_info['haproxy_backend'],
                 program_info['haproxy_server'],
                 action)
+
+        except HaProxyConnectionRefused, exc:
+            self.consecutive_refused_connections += 1
+            if MAX_CONSECUTIVE_CONNECTION_REFUSED \
+               >= self.consecutive_refused_connections:
+                self.log('ERROR: connection to HaProxy stats socket refused')
+                return self.fail()
+
+            self.log('WARNING: too many connections were refused,'
+                     ' therefore this and all future events will be'
+                     ' skipped unhandled for the next {} seconds.'.format(
+                         SKIP_TIMEOUT_AFTER_CONNECTION_REFUSED.seconds))
+            self.skip_until = datetime.now() \
+                              + SKIP_TIMEOUT_AFTER_CONNECTION_REFUSED
+            return self.ok()
+
         except Exception, exc:
             self.log('ERROR: {!r}'.format(exc))
             return self.fail()
 
+        self.consecutive_refused_connections = 0
         return self.ok()
 
     def ok(self):

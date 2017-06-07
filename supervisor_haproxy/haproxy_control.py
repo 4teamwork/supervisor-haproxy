@@ -1,5 +1,7 @@
 from contextlib import contextmanager
+from supervisor_haproxy.exceptions import HaProxyConnectionRefused
 import csv
+import errno
 import socket
 
 
@@ -66,7 +68,14 @@ class HaProxyControl(object):
     @contextmanager
     def connect(self):
         sock = socket.socket(self.sock_family, socket.SOCK_STREAM)
-        sock.connect(self.sock_address)
+        try:
+            sock.connect(self.sock_address)
+        except socket.error, exc:
+            if exc.errno == errno.ECONNREFUSED:
+                raise HaProxyConnectionRefused(exc)
+            else:
+                raise
+
         try:
             yield sock
         finally:
