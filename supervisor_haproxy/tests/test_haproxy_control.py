@@ -1,3 +1,4 @@
+from supervisor_haproxy.exceptions import HaProxyConnectionRefused
 from supervisor_haproxy.haproxy_control import HaProxyControl
 from supervisor_haproxy.haproxy_control import STATUS_DRAIN
 from supervisor_haproxy.haproxy_control import STATUS_MAINT
@@ -38,6 +39,15 @@ class TestHaProxyControl(unittest.TestCase):
         self.assertEqual(STATUS_MAINT, self.control.get_server_status('A', 'A1'))
         self.control.set_server_status('A', 'A1', STATUS_READY)
         self.assertEqual(STATUS_UP, self.control.get_server_status('A', 'A1'))
+
+    def test_connection_error_is_wrapped(self):
+        # no haproxy running at port 9903
+        control = HaProxyControl('tcp://127.0.0.1:9903')
+        with self.assertRaises(HaProxyConnectionRefused) as cm:
+            control.set_server_status('A', 'A1', STATUS_MAINT)
+
+        self.assertEquals('Connection refused',
+                          cm.exception.args[1])
 
 
 if __name__ == '__main__':
