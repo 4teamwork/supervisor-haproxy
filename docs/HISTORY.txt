@@ -5,8 +5,7 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Avoid high CPU load problem when connection to HaProxy fails
-  by skipping events. [jone]
+- Avoid high CPU load problem when connection to HaProxy fails. [jone]
 
 
 1.0.0 (2016-09-30)
