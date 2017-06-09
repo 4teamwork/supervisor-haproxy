@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-version = '1.0.1.dev0'
+version = '1.1.0'
 
 tests_require = [
     'freezegun',
