@@ -62,15 +62,15 @@ class HaProxyControl(object):
 
     def command(self, cmd):
         with self.connect() as sock:
-            sock.send(cmd.rstrip() + '\n')
-            return sock.recv(4096)
+            sock.send((cmd.rstrip() + '\n').encode())
+            return sock.recv(4096).decode()
 
     @contextmanager
     def connect(self):
         sock = socket.socket(self.sock_family, socket.SOCK_STREAM)
         try:
             sock.connect(self.sock_address)
-        except socket.error, exc:
+        except socket.error as exc:
             if exc.errno == errno.ECONNREFUSED:
                 raise HaProxyConnectionRefused(exc)
             else:

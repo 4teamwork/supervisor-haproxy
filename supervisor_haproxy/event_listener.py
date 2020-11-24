@@ -83,7 +83,7 @@ class HaProxyEventListener(object):
                 program_info['haproxy_server'],
                 action)
 
-        except HaProxyConnectionRefused, exc:
+        except HaProxyConnectionRefused as exc:
             self.consecutive_refused_connections += 1
             if MAX_CONSECUTIVE_CONNECTION_REFUSED \
                >= self.consecutive_refused_connections:
@@ -98,7 +98,7 @@ class HaProxyEventListener(object):
                               + SKIP_TIMEOUT_AFTER_CONNECTION_REFUSED
             return self.ok()
 
-        except Exception, exc:
+        except Exception as exc:
             self.log('ERROR: {!r}'.format(exc))
             return self.fail()
 

@@ -25,7 +25,7 @@ setup(name='supervisor-haproxy',
 
       install_requires=[
           'supervisor',
-
+          'six',
       ],
       tests_require=tests_require,
       test_suite='supervisor_haproxy.tests',

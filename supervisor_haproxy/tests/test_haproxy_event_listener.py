@@ -1,5 +1,5 @@
 from freezegun import freeze_time
-from StringIO import StringIO
+from six.moves import StringIO
 from supervisor_haproxy.event_listener import HaProxyEventListener
 from supervisor_haproxy.tests.haproxy_control import HaProxyControlMock
 from unittest2 import TestCase
@@ -203,6 +203,6 @@ class TestHaProxyEventListener(TestCase):
         self.event_listener.stdout.seek(0)
         self.event_listener.stderr.seek(0)
 
-        self.assertEquals('READY\n', self.event_listener.stdout.read(6))
+        self.assertEqual('READY\n', self.event_listener.stdout.read(6))
         return {'stdout': self.event_listener.stdout.read(),
                 'stderr': self.event_listener.stderr.read()}

@@ -46,8 +46,7 @@ class TestHaProxyControl(unittest.TestCase):
         with self.assertRaises(HaProxyConnectionRefused) as cm:
             control.set_server_status('A', 'A1', STATUS_MAINT)
 
-        self.assertEquals('Connection refused',
-                          cm.exception.args[1])
+        self.assertEqual('Connection refused', cm.exception.args[1])
 
 
 if __name__ == '__main__':
